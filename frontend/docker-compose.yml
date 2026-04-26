@@ -1,0 +1,15 @@
+services:
+  site:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VITE_API_ORIGIN:       ${VITE_API_ORIGIN:-http://localhost:8081}
+        VITE_DEFAULT_LANGUAGE: ${VITE_DEFAULT_LANGUAGE:-en}
+        VITE_SITE_TITLE:       ${VITE_SITE_TITLE:-Site}
+    ports:
+      - "${HTTP_PORT:-80}:80"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost/health || exit 1"]
+      interval: 30s; timeout: 5s; retries: 3
+    restart: unless-stopped
